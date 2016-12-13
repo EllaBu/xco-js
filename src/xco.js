@@ -215,13 +215,11 @@ function XCOUtil() {
 			"S" : date.getMilliseconds()
 		};
 		if (/(y+)/.test(fmt)) {
-			fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "")
-					.substr(4 - RegExp.$1.length));
+			fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
 		}
 		for ( var k in o) {
 			if (new RegExp("(" + k + ")").test(fmt)) {
-				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k])
-						: (("00" + o[k]).substr(("" + o[k]).length)));
+				fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
 			}
 		}
 		return fmt;
@@ -255,6 +253,10 @@ function XCO() {
 
 	this.getMessage = function() {
 		return this.get('$$MESSAGE');
+	}
+
+	this.getData = function() {
+		return this.get('$$DATA');
 	}
 
 	this.get = function(field) {
@@ -292,6 +294,11 @@ function XCO() {
 	}
 
 	this.getField = function(field) {
+		// return this.dateMap.get(field);
+		return _xcoOgnl.getField(this, field);
+	}
+
+	this.getField0 = function(field) {
 		return this.dateMap.get(field);
 	}
 
@@ -712,9 +719,7 @@ function XCO() {
 	this.fromXML = function(source) {
 		var xmlDoc = null;
 		if (window.ActiveXObject) {
-			var ARR_ACTIVEX = [ "MSXML4.DOMDocument", "MSXML3.DOMDocument",
-					"MSXML2.DOMDocument", "MSXML.DOMDocument",
-					"Microsoft.XmlDom" ];
+			var ARR_ACTIVEX = [ "MSXML4.DOMDocument", "MSXML3.DOMDocument", "MSXML2.DOMDocument", "MSXML.DOMDocument", "Microsoft.XmlDom" ];
 			var XmlDomflag = false;
 			for (var i = 0; i < ARR_ACTIVEX.length && !XmlDomflag; i++) {
 				try {
@@ -815,8 +820,7 @@ function XCO() {
 					var child = childList[j];
 					var childTag = child.tagName;
 					if (!(childTag == "S")) {
-						throw "Parse xml error: unexpected Tag name "
-								+ childTag + " under " + tag;
+						throw "Parse xml error: unexpected Tag name " + childTag + " under " + tag;
 					}
 					array[q++] = child.getAttribute("V");
 				}
@@ -831,8 +835,7 @@ function XCO() {
 					var child = childList[j];
 					var childTag = child.tagName;
 					if (!(childTag == "S")) {
-						throw "Parse xml error: unexpected Tag name "
-								+ childTag + " under " + tag;
+						throw "Parse xml error: unexpected Tag name " + childTag + " under " + tag;
 					}
 					array[q++] = child.getAttribute("V");
 				}
@@ -847,8 +850,7 @@ function XCO() {
 					var child = childList[j];
 					var childTag = child.tagName;
 					if (!(childTag == "S")) {
-						throw "Parse xml error: unexpected Tag name "
-								+ childTag + " under " + tag;
+						throw "Parse xml error: unexpected Tag name " + childTag + " under " + tag;
 					}
 					array[q++] = child.getAttribute("V");
 				}
@@ -864,8 +866,7 @@ function XCO() {
 					var child = childList[j];
 					var childTag = child.tagName;
 					if (!(childTag == "X")) {
-						throw "Parse xml error: unexpected Tag name "
-								+ childTag + " under " + tag;
+						throw "Parse xml error: unexpected Tag name " + childTag + " under " + tag;
 					}
 					var xco = new XCO();
 					xco.fromXML0(child);
@@ -881,8 +882,7 @@ function XCO() {
 					var child = childList[j];
 					var childTag = child.tagName;
 					if (!(childTag == "X")) {
-						throw "Parse xml error: unexpected Tag name "
-								+ childTag + " under " + tag;
+						throw "Parse xml error: unexpected Tag name " + childTag + " under " + tag;
 					}
 					var xco = new XCO();
 					xco.fromXML0(child);
@@ -898,8 +898,7 @@ function XCO() {
 					var child = childList[j];
 					var childTag = child.tagName;
 					if (!(childTag == "X")) {
-						throw "Parse xml error: unexpected Tag name "
-								+ childTag + " under " + tag;
+						throw "Parse xml error: unexpected Tag name " + childTag + " under " + tag;
 					}
 					var xco = new XCO();
 					xco.fromXML0(child);
@@ -1002,7 +1001,7 @@ function StringField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function() {
+	this.getValue = function(dataType) {
 		return this.value;
 	}
 
@@ -1015,8 +1014,7 @@ function StringField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(name).append("\"").append(":\"").append(
-				__xcoUtil.encodeTextForXML(this.value)).append("\"");
+		builder.append("\"").append(name).append("\"").append(":\"").append(__xcoUtil.encodeTextForXML(this.value)).append("\"");
 	}
 }
 
@@ -1025,7 +1023,7 @@ function IntegerField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function() {
+	this.getValue = function(dataType) {
 		return this.value;
 	}
 
@@ -1038,8 +1036,7 @@ function IntegerField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				this.value);
+		builder.append("\"").append(this.name).append("\"").append(":").append(this.value);
 	}
 }
 
@@ -1047,7 +1044,7 @@ function BooleanField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function() {
+	this.getValue = function(dataType) {
 		return this.value;
 	}
 
@@ -1060,8 +1057,7 @@ function BooleanField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				this.value);
+		builder.append("\"").append(this.name).append("\"").append(":").append(this.value);
 	}
 }
 
@@ -1070,7 +1066,7 @@ function LongField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function() {
+	this.getValue = function(dataType) {
 		return this.value;
 	}
 
@@ -1083,8 +1079,7 @@ function LongField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				this.value);
+		builder.append("\"").append(this.name).append("\"").append(":").append(this.value);
 	}
 }
 
@@ -1106,8 +1101,7 @@ function FloatField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				this.value);
+		builder.append("\"").append(this.name).append("\"").append(":").append(this.value);
 	}
 }
 
@@ -1129,8 +1123,7 @@ function DoubleField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				this.value);
+		builder.append("\"").append(this.name).append("\"").append(":").append(this.value);
 	}
 }
 
@@ -1152,8 +1145,7 @@ function BigIntegerField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":\"")
-				.append(this.value).append("\"");
+		builder.append("\"").append(this.name).append("\"").append(":\"").append(this.value).append("\"");
 	}
 }
 
@@ -1175,8 +1167,7 @@ function BigDecimalField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":\"")
-				.append(this.value).append("\"");
+		builder.append("\"").append(this.name).append("\"").append(":\"").append(this.value).append("\"");
 	}
 }
 
@@ -1201,8 +1192,7 @@ function DateField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":\"")
-				.append(__xcoUtil.getDateTimeString(this.value)).append("\"");
+		builder.append("\"").append(this.name).append("\"").append(":\"").append(__xcoUtil.getDateTimeString(this.value)).append("\"");
 	}
 }
 
@@ -1227,8 +1217,7 @@ function SqlTimeField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":\"")
-				.append(__xcoUtil.getTimeString(this.value)).append("\"");
+		builder.append("\"").append(this.name).append("\"").append(":\"").append(__xcoUtil.getTimeString(this.value)).append("\"");
 	}
 }
 
@@ -1253,8 +1242,7 @@ function SqlDateField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":\"")
-				.append(__xcoUtil.getDateString(this.value)).append("\"");
+		builder.append("\"").append(this.name).append("\"").append(":\"").append(__xcoUtil.getDateString(this.value)).append("\"");
 	}
 }
 
@@ -1272,8 +1260,7 @@ function XCOField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(name).append("\"").append(":").append(
-				this.value.toJSONString());
+		builder.append("\"").append(name).append("\"").append(":").append(this.value.toJSONString());
 	}
 }
 
@@ -1284,7 +1271,7 @@ function StringArrayField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getVlaue = function() {
+	this.getValue = function() {
 		return this.value;
 	}
 
@@ -1293,15 +1280,13 @@ function StringArrayField(name, value) {
 		builder.append(this.name);
 		builder.append("\">");
 		for (var i = 0, length = this.value.length; i < length; i++) {
-			builder.append("<S V=\""
-					+ __xcoUtil.encodeTextForXML(this.value[i]) + "\"/>");
+			builder.append("<S V=\"" + __xcoUtil.encodeTextForXML(this.value[i]) + "\"/>");
 		}
 		builder.append("</SA>");
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1319,7 +1304,7 @@ function IntegerArrayField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function(value) {
+	this.getValue = function() {
 		return this.value;
 	}
 
@@ -1332,8 +1317,7 @@ function IntegerArrayField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1360,7 +1344,7 @@ function FloatArrayField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function(value) {
+	this.getValue = function() {
 		return this.value;
 	}
 
@@ -1373,8 +1357,7 @@ function FloatArrayField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1401,7 +1384,7 @@ function DoubleArrayField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function(value) {
+	this.getValue = function() {
 		return this.value;
 	}
 
@@ -1414,8 +1397,7 @@ function DoubleArrayField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1442,7 +1424,7 @@ function LongArrayField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function(value) {
+	this.getValue = function() {
 		return this.value;
 	}
 
@@ -1455,8 +1437,7 @@ function LongArrayField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1483,8 +1464,8 @@ function XCOArrayField(name, value) {
 	this.name = name;
 	this.value = value;
 
-	this.getValue = function(value) {
-		return value;
+	this.getValue = function() {
+		return this.value;
 	}
 
 	this.toXMLString = function(builder) {
@@ -1496,8 +1477,7 @@ function XCOArrayField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1515,7 +1495,7 @@ function StringListField(name, value) {
 	this.value = value;
 
 	this.getValue = function() {
-		return value;
+		return this.value;
 	}
 
 	this.toXMLString = function(builder) {
@@ -1523,15 +1503,13 @@ function StringListField(name, value) {
 		builder.append(this.name);
 		builder.append("\">");
 		for (var i = 0, length = this.value.length; i < length; i++) {
-			builder.append("<S V=\""
-					+ __xcoUtil.encodeTextForXML(this.value[i]) + "\"/>");
+			builder.append("<S V=\"" + __xcoUtil.encodeTextForXML(this.value[i]) + "\"/>");
 		}
 		builder.append("</SL>");
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1547,7 +1525,7 @@ function XCOListField(name, value) {
 	this.value = value;
 
 	this.getValue = function() {
-		return value;
+		return this.value;
 	}
 
 	this.toXMLString = function(builder) {
@@ -1559,8 +1537,7 @@ function XCOListField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1588,15 +1565,13 @@ function StringSetField(name, value) {
 		builder.append(this.name);
 		builder.append("\">");
 		for (var i = 0, length = this.value.length; i < length; i++) {
-			builder.append("<S V=\""
-					+ __xcoUtil.encodeTextForXML(this.value[i]) + "\"/>");
+			builder.append("<S V=\"" + __xcoUtil.encodeTextForXML(this.value[i]) + "\"/>");
 		}
 		builder.append("</SS>");
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1627,8 +1602,7 @@ function XCOSetField(name, value) {
 	}
 
 	this.toJSONString = function(builder) {
-		builder.append("\"").append(this.name).append("\"").append(":").append(
-				"[");
+		builder.append("\"").append(this.name).append("\"").append(":").append("[");
 		for (var i = 0; i < this.value.length; i++) {
 			if (i > 0) {
 				builder.append(",");
@@ -1638,3 +1612,182 @@ function XCOSetField(name, value) {
 		builder.append("]");
 	}
 }
+
+// XCOOgnl------------------------------------
+
+if (typeof String.prototype.startsWith != 'function') {
+	String.prototype.startsWith = function(prefix) {
+		return this.slice(0, prefix.length) === prefix;
+	};
+}
+
+if (typeof String.prototype.endsWith != 'function') {
+	String.prototype.endsWith = function(suffix) {
+		return this.indexOf(suffix, this.length - suffix.length) !== -1;
+	};
+}
+
+function XCOOgnl() {
+
+	this.isSimpleField = function(text) {
+		var dotIndex = text.indexOf(".");
+		if (dotIndex > -1) {
+			return false;
+		}
+		var squareBracketsIndex = text.indexOf("[");
+		if (squareBracketsIndex > -1) {
+			return false;
+		}
+		return true;
+	}
+
+	this.findEndTag = function(text, start, end, endTag) {
+		for (var i = start + 1; i < end; i++) {
+			if (endTag == text.charAt(i)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	this.isInteger = function(text) {
+		if (/^[0-9]*$/.test(text)) {
+			return true;
+		}
+		return false;
+	}
+
+	this.parseField = function(text) {
+		// 0:属性, 1:索引
+		var list = [];
+		var builder = new XCOStringBuilder();
+		var srcLength = text.length;
+		for (var i = 0; i < srcLength; i++) {
+			var key = text.charAt(i);
+			switch (key) {
+			case '.':
+				if (builder.length() > 0) {
+					list.push(builder.toString());
+					builder = new XCOStringBuilder();
+				}
+				break;
+			case '[':
+				if (builder.length() > 0) {
+					list.push(builder.toString());
+					builder = new XCOStringBuilder();
+				}
+				// find ']'
+				var endTagPos = this.findEndTag(text, i, text.length, ']');
+				if (endTagPos > -1) {
+					// var temp = new String(src, i + 1, endTagPos - i - 1);
+					var temp = text.substr(i + 1, endTagPos - i - 1);
+					if ((temp.startsWith("'") && temp.endsWith("'")) || (temp.startsWith("\"") && temp.endsWith("\""))) {
+						list.push(temp.substring(1, temp.length - 1));
+					} else if (this.isInteger(temp)) {
+						list.push(parseInt(temp));
+					} else {
+						// 数组中的变量
+						list.push({
+							key : temp
+						});
+					}
+					i = endTagPos;
+				} else {
+					throw "Illegal field name: " + text;
+				}
+				break;
+			default:
+				builder.append(key);
+			}
+		}
+		if (builder.length() > 0) {
+			list.push(builder.toString());
+		}
+		return list;
+	}
+
+	this.getField = function(_xco, _field) {
+		if (this.isSimpleField(_field)) {
+			return _xco.getField0(_field);
+		} else {
+			var fieldItemList = this.parseField(_field);
+			var size = fieldItemList.length;
+			var returnObj = new XCOField(null, _xco);
+			for (var i = 0; i < size; i++) {
+				var hasNext = (i + 1) < size;
+				var fieldItem = fieldItemList[i];
+				if (typeof (fieldItem) == 'object') {
+					fieldItem = _xco.get(fieldItem.key);
+				}
+				if (returnObj instanceof XCOField) {
+					returnObj = this.getFieldFromXCO(returnObj, fieldItem);
+				} else if (returnObj instanceof XCOArrayField) {
+					returnObj = this.getFieldFromXCOArray(returnObj, fieldItem);
+				} else if (returnObj instanceof XCOListField) {
+					returnObj = this.getFieldFromXCOArray(returnObj, fieldItem);
+				} else if (returnObj instanceof XCOSetField) {
+					returnObj = this.getFieldFromXCOArray(returnObj, fieldItem);
+				}
+
+				else if (returnObj instanceof StringArrayField) {
+					returnObj = this.getFieldFromStringArray(returnObj, fieldItem);
+				} else if (returnObj instanceof StringListField) {
+					returnObj = this.getFieldFromStringArray(returnObj, fieldItem);
+				} else if (returnObj instanceof StringSetField) {
+					returnObj = this.getFieldFromStringArray(returnObj, fieldItem);
+				}
+
+				else if (returnObj instanceof IntegerArrayField) {
+					returnObj = this.getFieldFromIntegerArray(returnObj, fieldItem);
+				} else if (returnObj instanceof LongArrayField) {
+					returnObj = this.getFieldFromLongArray(returnObj, fieldItem);
+				} else if (returnObj instanceof FloatArrayField) {
+					returnObj = this.getFieldFromFloatArray(returnObj, fieldItem);
+				} else if (returnObj instanceof DoubleArrayField) {
+					returnObj = this.getFieldFromDoubleArray(returnObj, fieldItem);
+				}
+
+				else {
+					throw "Get value error from XCO: " + field;
+				}
+
+				if (null == returnObj && hasNext) {
+					return null;
+				}
+			}
+			return returnObj;
+		}
+	}
+
+	this.getFieldFromXCO = function(target, fieldItem) {
+		var _xco = target.getValue();
+		return _xco.getField0(fieldItem);
+	}
+
+	this.getFieldFromXCOArray = function(target, fieldItem) {
+		return new XCOField(null, target.getValue()[parseInt(fieldItem)]);
+	}
+
+	this.getFieldFromStringArray = function(target, fieldItem) {
+		return new StringField(null, target.getValue()[parseInt(fieldItem)]);
+	}
+
+	this.getFieldFromIntegerArray = function(target, fieldItem) {
+		return new IntegerField(null, target.getValue()[parseInt(fieldItem)]);
+	}
+
+	this.getFieldFromLongArray = function(target, fieldItem) {
+		return new LongField(null, target.getValue()[parseInt(fieldItem)]);
+	}
+
+	this.getFieldFromFloatArray = function(target, fieldItem) {
+		return new FloatField(null, target.getValue()[parseInt(fieldItem)]);
+	}
+
+	this.getFieldFromDoubleArray = function(target, fieldItem) {
+		return new DoubleField(null, target.getValue()[parseInt(fieldItem)]);
+	}
+
+}
+
+var _xcoOgnl = new XCOOgnl();
