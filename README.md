@@ -51,8 +51,8 @@
 
 > 2. JS代码中填充数据
 
-	<SCRIPT src="/js/xco.js" crossorigin="anonymous"></SCRIPT>
-	<SCRIPT src="/js/xco.template.js" crossorigin="anonymous"></SCRIPT>
+	<SCRIPT src="/js/xco.js" type="text/javascript"></SCRIPT>
+	<SCRIPT src="/js/xco.template.js" type="text/javascript"></SCRIPT>
 	<SCRIPT type="text/javascript">
 		var xco = new XCO();
 		var dataList = [ 'a', 'b', 'c' ];
