@@ -43,7 +43,7 @@ var XCOTemplate = {
 				if ('#' == _tempList[i].type) {
 					builder.append(_xco.get(_tempList[i].key));
 				} else {
-					builder.append(_extendedFunction[_tempList[i].key]());
+					builder.append(_extendedFunction[_tempList[i].key](_xco));
 				}
 			}
 		}
@@ -112,6 +112,12 @@ var XCOTemplate = {
 	},
 
 	execute : function(_container, _xco, _extendedFunction) {
+		var __parsedList = this.pretreatment(_container);
+		var __html = this.fillTemplate(__parsedList, _xco, _extendedFunction);
+		return __html;
+	},
+
+	pretreatment : function(_container) {
 		var __templateContainer = document.getElementById(_container);
 		if (undefined == __templateContainer || null == __templateContainer) {
 			throw 'Template container does not exist: ' + _container;
@@ -129,12 +135,12 @@ var XCOTemplate = {
 				}
 			}
 			if (__commentCount != 1) {
-				throw 'The comment nodes in the container are not unique: ' + _container;
+				throw 'The number of comment nodes in a container[' + _container + '] can only be one, and the number of comment nodes is '
+						+ __commentCount;
 			}
 			__parsedList = this.parseComment(__commentNode.nodeValue);
 			this._templateCache[_container] = __parsedList;
 		}
-		var __html = this.fillTemplate(__parsedList, _xco, _extendedFunction);
-		return __html;
+		return __parsedList;
 	}
 };

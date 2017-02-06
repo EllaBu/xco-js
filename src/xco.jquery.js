@@ -20,11 +20,7 @@
 						try {
 							_xcoResponse.fromXML0(response);
 							if (options.success) {
-								if (options.extra == undefined) {
-									options.success(_xcoResponse);
-								} else {
-									options.success(_xcoResponse, options.extra);
-								}
+								options.success(_xcoResponse, options);
 							}
 						} catch (e) {
 							throw e;
@@ -34,7 +30,6 @@
 			} catch (e) {
 				throw e;
 			}
-			// return options;
 		}
 	});
 })(jQuery);
