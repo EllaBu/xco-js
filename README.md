@@ -2,88 +2,56 @@
 
 ------
 
-### 1. 项目简介
+XCO-JS是一款以XCO数据对象为基础，集数据封装、数据请求、模板渲染、数据绑定和数据验证为一体的综合性JS框架。
 
-此项目为XCO的JavaScript实现版本，并提供基于Jquery的异步请求访问工具。
+![XCO-JS组件](http://www.xson.org/project/xco-js/images/01.png)
 
-*  xco.js: 			xco的js版本
-*  xco.jquery.js: 	基于Jquery的xco请求扩展
-*  xco.template.js: 一个基于xco的的模板工具
+## 2. 当前版本
 
-### 2. 版本更新说明
+当前最新版本：1.0.1
 
-*  提供xco的的模板工具
-*  xco.js提供ognl的访问方式
+## 3. 代码片段
 
-### 3. xco异步请求使用说明
+> 模板渲染
 
-> 1. 加入JS引用
+	<div id="container"><!-- 
+ 		<p>#{x|123}</p>
+		<p>#{y|'中国'}</p>
+	 --></div>
 
-	<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="xco.js"></script>
-	<script type="text/javascript" src="xco.jquery.js"></script>
+	<div id="container"><!-- 
+ 		<p>#{x+y}</p>
+		<p>#{x*y}</p>
+		<p>#{x+y*z}</p>
+		<p>#{money + '$'}</p>
+	 --></div>
 
-> 2. JS代码调用
+	<div id="container"><!-- 
+ 		<p>#{create_time@formatDateTime}</p>
+	 --></div>
 
-	function doPostAjax() {
-		var xco = new XCO();
-		xco.setIntegerValue("id", 10);
-		xco.setStringValue("name", "中国");
-		var options = {
-			url : "http://xxx.yyy.com/x.xco",
-			data : xco,
-			success : doCallBack
-		};
-		$.doXcoRequest(options);
-	}
-	
-	function doCallBack(data) {
-		alert('doCallBack:\n' + data);
-	}
+> 数据绑定
 
-### 4. xco模板使用说明
+	<div>
+		<p id="p1">用户ID:#{id}</p>
+		<p id="p2">用户昵称:#{name|'无名'}</p>
+		<p id="p3">年龄层次:#{age@getAgeLevel}</p>
+		<p id="p4">注册时间:#{create_time@formatDateTime}</p>
+		<p class="c2">@{getState}</p>
+		<a id="p5" href="toCertify.jsp?id=#{id}">#{name}</a>
+	</div>
 
-> 1. HTML中定义模板
+	<div>
+		<p id="p6">用户积分:#{xx:score}</p>
+		<p id="p7">用户资金:#{xx:(money/100)+'$'}</p>
+	</div>
 
-	<ul id="container">
-		<!--<li>name:#{dataList[i]}, URL:@{op}</li>-->
-	</ul>
+## 4. 技术文档
 
-> 2. JS代码中填充数据
+<http://www.xson.org/project/xco-js/index.html>
 
-	<SCRIPT src="/js/xco.js" type="text/javascript"></SCRIPT>
-	<SCRIPT src="/js/xco.template.js" type="text/javascript"></SCRIPT>
-	<SCRIPT type="text/javascript">
-		var xco = new XCO();
-		var dataList = [ 'a', 'b', 'c' ];
-		xco.setStringArrayValue("dataList", dataList);
+## 5. 沟通交流
 
-		var extendedFunction = {
-			op : function() {
-				return '<a href="/' + xco.get('dataList[i]') + '">查看详情</a>';
-			}
-		};
-		var html = '';
-		for (var i = 0; i < dataList.length; i++) {
-			xco.setIntegerValue("i", i);
-			html += XCOTemplate.execute("container", xco, extendedFunction);
-		}
-		document.getElementById("container").innerHTML = html;
-	</SCRIPT>
-	
-> 3. 说明
+QQ群：518522232**（请备注关注的项目）**
 
-`#{dataList[i]}`表示数据绑定，`@{op}`表示函数调用。
-
-### 5. xco.js之ognl访问
-
-	xco.get('a');
-	xco.get('a.b.c');
-	xco.get('a[0]');
-	xco.get('a[0].b.c');
-
-### 6. 相关资料
-
-XCO资料可参考: <https://github.com/xsonorg/xco>
-
-XCO控制器资料可参考: <https://github.com/xsonorg/web>
+邮箱：xson_org@126.com
